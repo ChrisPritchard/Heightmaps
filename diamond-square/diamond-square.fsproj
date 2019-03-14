@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>diamond_square</RootNamespace>
     <AssemblyName>DiamondSquare</AssemblyName>
   </PropertyGroup>
 

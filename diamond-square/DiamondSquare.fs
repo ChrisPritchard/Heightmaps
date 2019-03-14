@@ -19,14 +19,14 @@ let private diamondPoints x y size =
     ]
 
 let create dim seed =
-    let size = if dim % 2 = 0 then dim + 1 else dim
+    let size = dim//if dim % 2 = 0 then dim + 1 else dim
     let random = match seed with Some n -> Random n | _ -> Random ()
 
-    let array = Array2D.create size size 0.
-    squarePoints 0 0 (size - 1)
-    |> List.iter (fun (x, y) -> 
-        array.[x, y] <- random.NextDouble ())
-    
+    let array = Array2D.create size size 0.5
+    // squarePoints 0 0 (size - 1)
+    // |> List.iter (fun (x, y) -> 
+    //     array.[x, y] <- random.NextDouble ())
+        
     let arrayValue (x, y) =
         let x = if x < 0 then size + x else x
         let y = if y < 0 then size + y else y
@@ -58,5 +58,5 @@ let create dim seed =
             step (x + nsize) (y + nsize) nsize (range/2.)
             step x (y + nsize) nsize (range/2.)
 
-    step 0 0 (size - 1) 0.5
+    step 0 0 size 0.5
     array
