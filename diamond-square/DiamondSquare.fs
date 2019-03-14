@@ -32,7 +32,7 @@ let create dim seed =
         let y = if y < 0 then size + y else y
         array.[x % size, y % size]
 
-    let rec fill x y size range =
+    let rec step x y size range =
         // diamond step (set point in middle of square)
         let value = 
             squarePoints x y size 
@@ -53,10 +53,10 @@ let create dim seed =
        
         if size = 2 then ()
         else
-            fill x y nsize (range/2.)
-            fill (x + nsize) y nsize (range/2.)
-            fill (x + nsize) (y + nsize) nsize (range/2.)
-            fill x (y + nsize) nsize (range/2.)
+            step x y nsize (range/2.)
+            step (x + nsize) y nsize (range/2.)
+            step (x + nsize) (y + nsize) nsize (range/2.)
+            step x (y + nsize) nsize (range/2.)
 
-    fill 0 0 (size - 1) 0.5
+    step 0 0 (size - 1) 0.5
     array
