@@ -1,6 +1,5 @@
 ﻿
 open System.IO
-open DiamondSquare.Generator
 
 let saveAsPPM fileName array =
     if File.Exists fileName then File.Delete fileName
@@ -18,6 +17,6 @@ let saveAsPPM fileName array =
 
 [<EntryPoint>]
 let main _ =
-    let array = create 512 None
+    let array = DiamondSquare.create 512 None
     saveAsPPM "test.ppm" array
     0 // return an integer exit code
