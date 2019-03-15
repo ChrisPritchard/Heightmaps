@@ -19,18 +19,23 @@ let private diamondPoints x y size =
     ]
 
 let create dim seed =
-    let size = dim//if dim % 2 = 0 then dim + 1 else dim
+    let dim  = if dim % 2 = 0 then dim + 1 else dim
     let random = match seed with Some n -> Random n | _ -> Random ()
 
-    let array = Array2D.create size size 0.5
-    // squarePoints 0 0 (size - 1)
-    // |> List.iter (fun (x, y) -> 
-    //     array.[x, y] <- random.NextDouble ())
+    let array = Array2D.create dim dim 0.5
         
+    let arrayPoints x y = 
+        let x = if x < 0 then dim + x else x
+        let y = if y < 0 then dim + y else y
+        x % dim, y % dim
+
     let arrayValue (x, y) =
-        let x = if x < 0 then size + x else x
-        let y = if y < 0 then size + y else y
-        array.[x % size, y % size]
+        let x, y = arrayPoints x y
+        array.[x, y]
+
+    let arraySet x y v =
+        let x, y = arrayPoints x y
+        array.[x, y] <- v
 
     let rec step x y size range =
         // diamond step (set point in middle of square)
@@ -38,9 +43,9 @@ let create dim seed =
             squarePoints x y size 
             |> List.sumBy arrayValue
             |> fun total -> total / 4.
-        let nsize = size/2
+        let nsize = int (ceil (float size/2.))
         let mx, my = x + nsize, y + nsize
-        array.[mx, my] <- min 1. (value + (random.NextDouble() * range))
+        arraySet mx my (min 1. (value + (random.NextDouble() * range)))
 
         // square step (four new squares from diamond, above)
         diamondPoints mx my nsize
@@ -49,7 +54,7 @@ let create dim seed =
                 diamondPoints cx cy nsize 
                 |> List.sumBy arrayValue
                 |> fun total -> total / 4.
-            array.[cx, cy] <- min 1. (value + (random.NextDouble() * range)))
+            arraySet cx cy (min 1. (value + (random.NextDouble() * range))))
        
         if size = 2 then ()
         else
@@ -58,5 +63,5 @@ let create dim seed =
             step (x + nsize) (y + nsize) nsize (range/2.)
             step x (y + nsize) nsize (range/2.)
 
-    step 0 0 size 0.5
+    step 0 0 (dim - 1) 0.5
     array
