@@ -1,6 +1,4 @@
 ﻿
-open System.IO
-
 [<EntryPoint>]
 let main _ =
     let array = DiamondSquare.create 512 None
