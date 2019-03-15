@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="LICENSE" />
+    <None Include="README.md" />
     <Compile Include="BMP.fs" />
     <Compile Include="PPM.fs" />
     <Compile Include="Perlin.fs" />
