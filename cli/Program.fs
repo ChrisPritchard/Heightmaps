@@ -1,8 +1,16 @@
 ﻿open SDL
 
+type RenderMode = SDL | PPM of string | BMP of string
+type NoiseType = DiamondSquare | Perlin
+
+let getConfig args = 
+    Some (DiamondSquare, 512, SDL, None)
+
 [<EntryPoint>]
 let main args =
-    if Array.isEmpty args || args = [|"help"|] || args = [|"?"|] then
+    let config = getConfig args
+    match config with
+    | None ->
         """
             Arguments:
             -perlin will generate perlin noise
@@ -17,10 +25,15 @@ let main args =
             -bmp [fn]: will save output as a .bmp image
 
                 * default is to show as a SDL surface, with 'R' and 'Escape' to regenerate or quit
+
+            -seed n: will initialise the random seed
+
+                * default is uninitialised, i.e. random
         """
         |> printfn "%s"
-    else
+    | Some (noise, size, render, seed) ->
+        
         //let array = DiamondSquare.create 512 None
         //Bitmaps.PPM.grayscale "test.ppm" array
-        showViaSDL 513 (fun () -> DiamondSquare.create 512 None)
+        showViaSDL 513 (fun () -> DiamondSquare.create size seed)
     0
