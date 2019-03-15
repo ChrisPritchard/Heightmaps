@@ -1,4 +1,4 @@
-﻿module Bitmaps.PPM
+﻿module PPM
 
 open System.IO
 
