@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="BMP.fs" />
     <Compile Include="PPM.fs" />
     <Compile Include="Perlin.fs" />
     <Compile Include="DiamondSquare.fs" />

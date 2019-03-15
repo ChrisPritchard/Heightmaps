@@ -51,12 +51,13 @@ let main args =
         """
         |> printfn "%s"
     | Some (noise, size, render, seed) ->
-        match noise, render with
-        | DiamondSquare, SDL ->
-            showViaSDL size (fun () -> DiamondSquare.create size seed)
-        | Perlin, SDL ->
-            showViaSDL size (fun () -> Perlin.create size seed)
-        //let array = DiamondSquare.create 512 None
-        //Bitmaps.PPM.grayscale "test.ppm" array
+        let creator = 
+            match noise with 
+            | DiamondSquare -> fun () -> DiamondSquare.create size seed
+            | Perlin -> fun () -> Perlin.create size seed
+        match render with
+        | SDL -> showViaSDL size creator
+        | PPM fileName -> creator () |> PPM.grayscale fileName
+        | BMP fileName -> creator () |> BMP.grayscale fileName
         
     0
