@@ -24,7 +24,7 @@ let create dim seed =
 
     let array = Array2D.create dim dim 0.
     squarePoints 0 0 (dim - 1) 
-    |> List.iter (fun (x, y) -> array.[x, y] <- 0.5)
+    |> List.iter (fun (x, y) -> array.[x, y] <- random.NextDouble())
         
     let arrayPoints (x, y) = 
         (if x < 0 then (dim-1) + x elif x >= dim then x - (dim - 1) else x),
@@ -34,40 +34,37 @@ let create dim seed =
 
         let hsize = size/2
 
-        let mutable x, y = 0, 0
+        let mutable x = 0
         while x < dim - 1 do
+            let mutable y = 0
             while y < dim - 1 do
                 // diamond step (set point in middle of square)
                 let corners = 
                     squarePoints x y size 
                     |> List.map arrayPoints
-                    |> List.map (fun (x, y) -> (x, y), array.[x, y])
-                if corners |> List.tryFind (snd >> (=) 0.) <> None then
-                    ()
+                    |> List.map (fun (x, y) -> array.[x, y])
                 let value = 
                     corners
-                    |> List.sumBy snd
+                    |> List.sum
                     |> fun total -> min 1. ((total / 4.) + (random.NextDouble() * range))
-                
                 let mx, my = x + hsize, y + hsize
                 array.[mx, my] <- value
                 y <- y + size
             x <- x + size
         
-        let mutable mx, my = hsize, hsize
+        let mutable mx = hsize
         while mx < dim - 1 do
+            let mutable my = hsize
             while my < dim - 1 do
                 // square step (four new squares from diamond, above)
                 for (cx, cy) in diamondPoints mx my hsize do
                     let points = 
                         diamondPoints cx cy hsize 
                         |> List.map arrayPoints
-                        |> List.map (fun (x, y) -> (x, y), array.[x, y])
-                    if points |> List.tryFind (snd >> (=) 0.) <> None then
-                        ()
+                        |> List.map (fun (x, y) -> array.[x, y])
                     let value = 
                         points
-                        |> List.sumBy snd
+                        |> List.sum
                         |> fun total -> min 1. ((total / 4.) + (random.NextDouble() * range))
                     array.[cx, cy] <- value
                 my <- my + size
