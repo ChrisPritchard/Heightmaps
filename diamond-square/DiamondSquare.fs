@@ -29,6 +29,10 @@ let create dim seed =
     let arrayPoints (x, y) = 
         (if x < 0 then (dim-1) + x elif x >= dim then x - (dim - 1) else x),
         (if y < 0 then (dim-1) + y elif y >= dim then y - (dim - 1) else y)
+    
+    let adjusted range v =
+        let a = random.NextDouble() * range - range/2.
+        max 0. (min 1. (v + a))
 
     let rec step size range =
 
@@ -46,7 +50,7 @@ let create dim seed =
                 let value = 
                     corners
                     |> List.sum
-                    |> fun total -> min 1. ((total / 4.) + (random.NextDouble() * range))
+                    |> fun total -> adjusted range (total / 4.)
                 let mx, my = x + hsize, y + hsize
                 array.[mx, my] <- value
                 y <- y + size
@@ -65,7 +69,7 @@ let create dim seed =
                     let value = 
                         points
                         |> List.sum
-                        |> fun total -> min 1. ((total / 4.) + (random.NextDouble() * range))
+                        |> fun total -> adjusted range (total / 4.)
                     array.[cx, cy] <- value
                 my <- my + size
             mx <- mx + size
