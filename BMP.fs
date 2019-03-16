@@ -1,4 +1,6 @@
-﻿module BMP
+﻿/// The code in this module is attempting to replicate the specification here:
+/// https://en.wikipedia.org/wiki/BMP_file_format
+module BMP
 
 open System.IO
 open System
@@ -17,8 +19,8 @@ let grayscale fileName array =
             yield! BitConverter.GetBytes (uint16 32)    // bpp (24bit)
             yield! BitConverter.GetBytes (uint32 3)     // BI_BITFIELDS, no pixel array compression used 
             yield! BitConverter.GetBytes (uint32 32)    // Size of the raw bitmap data (including padding) 
-            yield! BitConverter.GetBytes (uint32 2835)  // 72dpi horizontal
-            yield! BitConverter.GetBytes (uint32 2835)  // 72dpi vertical
+            yield! BitConverter.GetBytes (int32 2835)  // 72dpi horizontal
+            yield! BitConverter.GetBytes (int32 2835)  // 72dpi vertical
             yield! BitConverter.GetBytes (uint32 0)     // palette colours (0, not using a palette)
             yield! BitConverter.GetBytes (uint32 0)     // important colours (0=all)
             yield! [0uy;0uy;255uy;0uy]                  // red bit mask
@@ -51,3 +53,8 @@ let grayscale fileName array =
                 let gs = int (v * 255.) |> byte
                 yield! [gs;gs;gs;255uy]
     ] |> Seq.iter out.WriteByte
+
+    out.Close ()
+    out.Dispose ()
+
+    ()
