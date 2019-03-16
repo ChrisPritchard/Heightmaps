@@ -4,13 +4,14 @@ module BMP
 
 open System.IO
 open System
+open System.Drawing
 
 let grayscale fileName array =
     if File.Exists fileName then File.Delete fileName
     use out = File.OpenWrite fileName
 
     let width, height = Array2D.length1 array, Array2D.length2 array
-    let padding = width % 4
+    let padding = (width * 3) % 4
     let byteSize = ((width * 3) + padding) * height
 
     // Format is header, size of dib, dib, pixel data
@@ -18,6 +19,7 @@ let grayscale fileName array =
     // and before the dib itself, where its actual size is specified.
 
     let dib = [
+            // note the dib header size isn't here, as its dynamically calculated and added below
             yield! BitConverter.GetBytes (uint32 width)
             yield! BitConverter.GetBytes (uint32 height)
             yield! BitConverter.GetBytes (uint16 1)     // planes (=1)
@@ -41,7 +43,7 @@ let grayscale fileName array =
 
     [
         yield! header
-        yield! BitConverter.GetBytes (uint32 dib.Length)
+        yield! BitConverter.GetBytes (uint32 (dib.Length + 4))
         yield! dib
         
         for y in [height-1..-1..0] do
@@ -54,5 +56,5 @@ let grayscale fileName array =
 
     out.Close ()
     out.Dispose ()
-
+    Image.FromFile fileName |> ignore
     ()
