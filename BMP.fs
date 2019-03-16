@@ -16,7 +16,7 @@ let grayscale fileName array =
             yield! BitConverter.GetBytes (uint32 width)
             yield! BitConverter.GetBytes (uint32 height)
             yield! BitConverter.GetBytes (uint16 1)     // planes (=1)
-            yield! BitConverter.GetBytes (uint16 32)    // bpp (24bit)
+            yield! BitConverter.GetBytes (uint16 32)    // bpp (32bit)
             yield! BitConverter.GetBytes (uint32 3)     // BI_BITFIELDS, no pixel array compression used 
             yield! BitConverter.GetBytes (uint32 32)    // Size of the raw bitmap data (including padding) 
             yield! BitConverter.GetBytes (int32 2835)  // 72dpi horizontal
@@ -38,8 +38,9 @@ let grayscale fileName array =
             yield! "BM" |> Seq.map byte
             let totalSize = 14 + 4 + dib.Length + byteSize // header is 14, 4 for dib size, then dib size, then pixels
             yield! BitConverter.GetBytes (uint32 totalSize)
-            yield! BitConverter.GetBytes (uint32 0) // unused
-            yield! BitConverter.GetBytes (uint32 (14 + 4 + dib.Length)) // offset to pixels
+            yield! BitConverter.GetBytes (uint32 0) // reserved/unused
+            let offSetToPixels = 14 + 4 + dib.Length
+            yield! BitConverter.GetBytes (uint32 offSetToPixels)
         ]
 
     [
