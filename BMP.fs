@@ -13,11 +13,15 @@ let grayscale fileName array =
     let padding = width % 4
     let byteSize = ((width * 3) + padding) * height
 
+    // Format is header, size of dib, dib, pixel data
+    // Dib is defined first as its size is part of the header (in the offset and total size fields)
+    // and before the dib itself, where its actual size is specified.
+
     let dib = [
             yield! BitConverter.GetBytes (uint32 width)
             yield! BitConverter.GetBytes (uint32 height)
             yield! BitConverter.GetBytes (uint16 1)     // planes (=1)
-            yield! BitConverter.GetBytes (uint16 24)    // bpp (32bit)
+            yield! BitConverter.GetBytes (uint16 24)    // bpp (24bit)
             yield! BitConverter.GetBytes (uint32 0)     // BI_RGB, no pixel array compression used 
             yield! BitConverter.GetBytes (uint32 byteSize)    // Size of the raw bitmap data (including padding) 
             yield! BitConverter.GetBytes (int32 2835)  // 72dpi horizontal
