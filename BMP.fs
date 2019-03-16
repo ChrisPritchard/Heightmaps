@@ -12,7 +12,9 @@ let grayscale fileName array =
     use out = File.OpenWrite fileName
 
     let width, height = Array2D.length1 array, Array2D.length2 array
-    let padding = (width * 3) % 4
+    // each line width must be divisible by 4. 
+    // as each pixel is three bytes, we need padding bytes
+    let padding = 4 - ((width * 3) % 4) 
     let byteSize = ((width * 3) + padding) * height
 
     let as4bytes n = BitConverter.GetBytes (uint32 n)
