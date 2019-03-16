@@ -1,6 +1,6 @@
 # Heightmaps
 
-A collection of heightmap generators, along with some bmp/ppm image format savers.
+A collection of heightmap generators, along with some bmp/ppm image format savers. No external libraries have been used (except for the SDL C library), so this project will hopefully serve as a good reference source for a raw F# implementation of these algorithms.
 
 Currently, [diamond-square](https://en.wikipedia.org/wiki/Diamond-square_algorithm) has been implemented, with the [PPM format](https://en.wikipedia.org/wiki/Netpbm_format), [BMP format](https://en.wikipedia.org/wiki/BMP_file_format) and a SDL renderer.
 
