@@ -2,7 +2,7 @@
 
 A collection of heightmap generators, along with some bmp/ppm image format savers.
 
-Currently, [diamond-square](https://en.wikipedia.org/wiki/Diamond-square_algorithm) has been implemented, with the PPM format, BMP format and SDL renderer.
+Currently, [diamond-square](https://en.wikipedia.org/wiki/Diamond-square_algorithm) has been implemented, with the [PPM format](https://en.wikipedia.org/wiki/Netpbm_format), [BMP format](https://en.wikipedia.org/wiki/BMP_file_format) and a SDL renderer.
 
 The project is a console app. It will take command-line arguments to configure (instructions can be seen by running it with 'help', or seeing the definition in the code [here](https://github.com/ChrisPritchard/Heightmaps/blob/master/cli/Program.fs#L38).
 

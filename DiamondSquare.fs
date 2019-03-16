@@ -1,4 +1,6 @@
-﻿module DiamondSquare
+﻿/// The implementation in here was derived from the description here:
+/// https://en.wikipedia.org/wiki/Diamond-square_algorithm
+module DiamondSquare
 
 open System
 
