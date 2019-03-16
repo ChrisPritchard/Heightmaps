@@ -23,13 +23,18 @@ let create dim seed =
     let random = match seed with Some n -> Random n | _ -> Random ()
 
     let array = Array2D.create dim dim 0.
+
+    /// The four corners (as part of the first diamond step) are set to a random value
     squarePoints 0 0 (dim - 1) 
     |> List.iter (fun (x, y) -> array.[x, y] <- random.NextDouble())
         
-    let arrayPoints (x, y) = 
+    /// This function makes sure points 'wrap around'
+    let arrayPoints (x, y) =
         (if x < 0 then (dim-1) + x elif x >= dim then x - (dim - 1) else x),
         (if y < 0 then (dim-1) + y elif y >= dim then y - (dim - 1) else y)
     
+    /// This adds the random range, positive/negative, multiplied by a random percentage to the calculated value
+    /// Without this there is no 'noise' in the image.
     let adjusted range v =
         let a = random.NextDouble() * range - range/2.
         max 0. (min 1. (v + a))
@@ -37,12 +42,14 @@ let create dim seed =
     let rec step size range =
 
         let hsize = size/2
-
+        
+        // Diamond step:
+        // For each 'square' in the image, a point is set in the middle
+        // This creates four new diamonds (empty space bounded by top/left/bottom/right points)
         let mutable x = 0
         while x < dim - 1 do
             let mutable y = 0
             while y < dim - 1 do
-                // diamond step (set point in middle of square)
                 let corners = 
                     squarePoints x y size 
                     |> List.map arrayPoints
@@ -55,12 +62,14 @@ let create dim seed =
                 array.[mx, my] <- value
                 y <- y + size
             x <- x + size
-        
+
+        // Square step:
+        // For each 'diamond' in the image, a point is set in the middle
+        // This creates four new squares (empty space bounded by four corner points)
         let mutable mx = hsize
         while mx < dim - 1 do
             let mutable my = hsize
             while my < dim - 1 do
-                // square step (four new squares from diamond, above)
                 for (cx, cy) in diamondPoints mx my hsize do
                     let points = 
                         diamondPoints cx cy hsize 
@@ -76,7 +85,7 @@ let create dim seed =
        
         if size < 2 then ()
         else
-            step hsize (range/2.)
+            step hsize (range/2.) // changing the reduction in range (e.g to * 0.8) affects the granularity of the image
 
     step (dim-1) 0.5
     array
