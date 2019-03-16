@@ -91,14 +91,14 @@ let private updateTexture getArray width texture =
     let bufferPtr = IntPtr ((Marshal.UnsafeAddrOfPinnedArrayElement (frameBuffer, 0)).ToPointer ())
     SDL_UpdateTexture(texture, IntPtr.Zero, bufferPtr, width * 4) |> ignore
 
-let showViaSDL dim getArray =
+let showViaSDL width height getArray =
     let mutable window, renderer = IntPtr.Zero, IntPtr.Zero
     SDL_Init(SDL_INIT_VIDEO) |> ignore
     let windowFlags = SDL_WindowFlags.SDL_WINDOW_SHOWN ||| SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS
-    SDL_CreateWindowAndRenderer(dim, dim, windowFlags, &window, &renderer) |> ignore
+    SDL_CreateWindowAndRenderer(width, height, windowFlags, &window, &renderer) |> ignore
 
-    let texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, dim, dim)
-    updateTexture getArray dim texture
+    let texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height)
+    updateTexture getArray width texture
 
     let mutable keyEvent = Unchecked.defaultof<SDL_KeyboardEvent>
 
@@ -110,7 +110,7 @@ let showViaSDL dim getArray =
         if SDL_PollEvent(&keyEvent) <> 0 && keyEvent.``type`` = SDL_KEYDOWN then
             if keyEvent.keysym.sym = SDLK_ESCAPE then ()
             elif keyEvent.keysym.sym = uint32 'r' then
-                updateTexture getArray dim texture
+                updateTexture getArray width texture
                 drawLoop ()
             else
                 drawLoop ()

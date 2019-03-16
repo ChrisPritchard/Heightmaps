@@ -2,17 +2,22 @@
 open System
 
 type RenderMode = SDL | PPM of string | BMP of string
-type NoiseType = DiamondSquare | Perlin
+type NoiseType = DiamondSquare of powerOfTwo:int | Perlin of width:int * height:int
 
 let getConfig args = 
     if args = [|"help"|] || args = [|"?"|] then 
         None
     else
-        let noise = if Array.contains "-perlin" args then Perlin else DiamondSquare
-        let size = 
-            let index = Array.IndexOf (args, "-size") 
-            if index < 0 then 513 
-            else Int32.Parse (args.[index + 1])
+        let parse i = Int32.Parse args.[i]
+        let noise = 
+            let perlinIndex = Array.IndexOf (args, "-perlin") 
+            let diamondIndex = Array.IndexOf (args, "-diamondsquare") 
+            if perlinIndex < 0 && diamondIndex < 0 then 
+                DiamondSquare 8
+            elif perlinIndex < 0 then
+                DiamondSquare (min 12 (parse (diamondIndex + 1)))
+            else
+                Perlin (parse (perlinIndex + 1), parse (perlinIndex + 2))
         let output =
             let ppmIndex = Array.IndexOf (args, "-ppm") 
             let bmpIndex = Array.IndexOf (args, "-bmp") 
@@ -23,7 +28,7 @@ let getConfig args =
             let index = Array.IndexOf (args, "-seed") 
             if index < 0 then None 
             else Some (Int32.Parse (args.[index + 1]))
-        Some (noise, size, output, seed)
+        Some (noise, output, seed)
 
 [<EntryPoint>]
 let main args =
@@ -32,13 +37,11 @@ let main args =
     | None ->
         """
             Arguments:
-            -perlin will generate perlin noise
+            -perlin [w] [h] will generate perlin noise
+            -diamondsquare [power of 2] will generate a diamond square heightmap, at 2n+1 size
 
-                * default is a diamond square heightmap
-
-            -dim [x] will specify the width/height of the output
-
-                * default is 513 (2^6 + 1)
+                * default is a diamond square heightmap, with 9 as the power of 2 (513 pixels)
+                * diamond square will max out at a 2n value of 12 (which would create a 50mb bmp)
 
             -ppm [fn]: will save output as a .ppm image
             -bmp [fn]: will save output as a .bmp image
@@ -50,13 +53,18 @@ let main args =
                 * default is uninitialised, i.e. random
         """
         |> printfn "%s"
-    | Some (noise, size, render, seed) ->
+    | Some (noise, render, seed) ->
         let creator = 
             match noise with 
-            | DiamondSquare -> fun () -> DiamondSquare.create size seed
-            | Perlin -> fun () -> Perlin.create size seed
+            | DiamondSquare n -> fun () -> DiamondSquare.create (pown 2 n + 1) seed
+            | Perlin (w, h) -> fun () -> Perlin.create w h seed
         match render with
-        | SDL -> showViaSDL size creator
+        | SDL -> 
+            let width, height = 
+                match noise with 
+                | DiamondSquare n -> pown 2 n + 1, pown 2 n + 1
+                | Perlin (w, h) -> w, h
+            showViaSDL width height creator
         | PPM fileName -> creator () |> PPM.grayscale fileName
         | BMP fileName -> creator () |> BMP.grayscale fileName
         
