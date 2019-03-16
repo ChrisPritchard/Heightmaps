@@ -1,10 +1,11 @@
 ﻿/// The code in this module is attempting to replicate the specification here:
 /// https://en.wikipedia.org/wiki/BMP_file_format
+/// and here:
+/// http://www.ece.ualberta.ca/~elliott/ee552/studentAppNotes/2003_w/misc/bmp_file_format/bmp_file_format.htm
 module BMP
 
-open System.IO
 open System
-open System.Drawing
+open System.IO
 
 let grayscale fileName array =
     if File.Exists fileName then File.Delete fileName
@@ -43,7 +44,11 @@ let grayscale fileName array =
 
     [
         yield! header
-        yield! BitConverter.GetBytes (uint32 (dib.Length + 4))
+
+        // the +4 is because the dibsize includes the 
+        // size of this field containing the dib size
+        yield! BitConverter.GetBytes (uint32 (dib.Length + 4)) 
+
         yield! dib
         
         for y in [height-1..-1..0] do
@@ -53,8 +58,3 @@ let grayscale fileName array =
                 yield! [gs;gs;gs]
             yield! List.replicate padding 0uy
     ] |> Seq.iter out.WriteByte
-
-    out.Close ()
-    out.Dispose ()
-    Image.FromFile fileName |> ignore
-    ()
