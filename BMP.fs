@@ -15,31 +15,33 @@ let grayscale fileName array =
     let padding = (width * 3) % 4
     let byteSize = ((width * 3) + padding) * height
 
+    let as4bytes n = BitConverter.GetBytes (uint32 n)
+    let as2bytes n = BitConverter.GetBytes (uint16 n)
+    let zero = [0uy;0uy;0uy;0uy]
+
     // Format is header, size of dib, dib, pixel data
     // Dib is defined first as its size is part of the header (in the offset and total size fields)
     // and before the dib itself, where its actual size is specified.
 
     let dib = [
             // note the dib header size isn't here, as its dynamically calculated and added below
-            yield! BitConverter.GetBytes (uint32 width)
-            yield! BitConverter.GetBytes (uint32 height)
-            yield! BitConverter.GetBytes (uint16 1)     // planes (=1)
-            yield! BitConverter.GetBytes (uint16 24)    // bpp (24bit)
-            yield! BitConverter.GetBytes (uint32 0)     // BI_RGB, no pixel array compression used 
-            yield! BitConverter.GetBytes (uint32 byteSize)    // Size of the raw bitmap data (including padding) 
-            yield! BitConverter.GetBytes (int32 2835)  // 72dpi horizontal
-            yield! BitConverter.GetBytes (int32 2835)  // 72dpi vertical
-            yield! BitConverter.GetBytes (uint32 0)     // palette colours (0, not using a palette)
-            yield! BitConverter.GetBytes (uint32 0)     // important colours (0=all)
+            yield! as4bytes width
+            yield! as4bytes height
+            yield! as2bytes 1           // planes (=1)
+            yield! as2bytes 24          // bpp (24bit)
+            yield! zero                 // BI_RGB, no pixel array compression used 
+            yield! as4bytes byteSize    // Size of the raw bitmap data (including padding) 
+            yield! as4bytes 2835        // 72dpi horizontal (calc in wiki article)
+            yield! as4bytes 2835        // 72dpi vertical
+            yield! zero                 // palette colours (0, not using a palette)
+            yield! zero                 // important colours (0=all)
         ]
 
     let header = [
-            yield! "BM" |> Seq.map byte
-            let totalSize = 14 + 4 + dib.Length + byteSize // header is 14, 4 for dib size, then dib size, then pixels
-            yield! BitConverter.GetBytes (uint32 totalSize)
-            yield! BitConverter.GetBytes (uint32 0) // reserved/unused
-            let offSetToPixels = 14 + 4 + dib.Length
-            yield! BitConverter.GetBytes (uint32 offSetToPixels)
+            yield! "BM" |> Seq.map byte                         // standard header for BMP
+            yield! as4bytes (14 + 4 + dib.Length + byteSize)    // header is 14, 4 for dib size, then dib size, then pixels
+            yield! zero                                         // reserved/unused
+            yield! as4bytes (14 + 4 + dib.Length)               // offset to byte data
         ]
 
     [
@@ -47,7 +49,7 @@ let grayscale fileName array =
 
         // the +4 is because the dibsize includes the 
         // size of this field containing the dib size
-        yield! BitConverter.GetBytes (uint32 (dib.Length + 4)) 
+        yield! as4bytes (dib.Length + 4)
 
         yield! dib
         
