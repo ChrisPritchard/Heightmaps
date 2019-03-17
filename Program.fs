@@ -64,7 +64,7 @@ let main args =
             match noise with 
             | DiamondSquare n -> fun () -> DiamondSquare.create (pown 2 n + 1) seed
             | Perlin (w, h) -> fun () -> Perlin.create w h seed
-            | Simplex (w, h) -> fun () -> Simplex.create w h
+            | Simplex (w, h) -> fun () -> Simplex.create w h 0.01 seed
         match render with
         | SDL -> 
             let width, height = 

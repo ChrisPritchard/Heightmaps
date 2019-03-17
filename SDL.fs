@@ -50,6 +50,9 @@ extern int SDL_Init(uint32 flags)
 extern int SDL_CreateWindowAndRenderer (int width, int height, SDL_WindowFlags flags, IntPtr& window, IntPtr& renderer)
 
 [<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
+extern unit SDL_Delay(uint32 milliseconds)
+
+[<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
 extern int SDL_PollEvent(SDL_KeyboardEvent& _event)
 
 [<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
@@ -59,16 +62,16 @@ extern IntPtr SDL_CreateTexture (IntPtr renderer, uint32 format, int access, int
 extern int SDL_UpdateTexture(IntPtr texture, IntPtr rect, IntPtr pixels, int pitch);
 
 [<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
-extern int SDL_RenderClear(IntPtr renderer);
+extern int SDL_RenderClear(IntPtr renderer)
 
 [<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
 extern int SDL_RenderCopy(IntPtr renderer, IntPtr texture, IntPtr srcrect, IntPtr destrect);
 
 [<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
-extern unit SDL_RenderPresent(IntPtr renderer);
+extern unit SDL_RenderPresent(IntPtr renderer)
 
 [<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
-extern unit SDL_DestroyTexture(IntPtr texture);
+extern unit SDL_DestroyTexture(IntPtr texture)
 
 [<DllImport(libName, CallingConvention = CallingConvention.Cdecl)>]
 extern unit SDL_DestroyRenderer(IntPtr renderer)
@@ -106,6 +109,8 @@ let showViaSDL width height getArray =
         SDL_RenderClear(renderer) |> ignore
         SDL_RenderCopy(renderer, texture, IntPtr.Zero, IntPtr.Zero) |> ignore
         SDL_RenderPresent(renderer) |> ignore
+
+        SDL_Delay 200u
 
         if SDL_PollEvent(&keyEvent) <> 0 && keyEvent.``type`` = SDL_KEYDOWN then
             if keyEvent.keysym.sym = SDLK_ESCAPE then ()
