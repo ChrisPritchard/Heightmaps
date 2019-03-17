@@ -23,7 +23,7 @@ let getConfig args =
             elif perlinIndex < 0 && simplexIndex < 0 then
                 DiamondSquare (min 12 (parse (diamondIndex + 1)))
             else
-                Simplex (parse (perlinIndex + 1), parse (perlinIndex + 2))
+                Simplex (parse (simplexIndex + 1), parse (simplexIndex + 2))
         let output =
             let ppmIndex = Array.IndexOf (args, "-ppm") 
             let bmpIndex = Array.IndexOf (args, "-bmp") 
@@ -64,12 +64,13 @@ let main args =
             match noise with 
             | DiamondSquare n -> fun () -> DiamondSquare.create (pown 2 n + 1) seed
             | Perlin (w, h) -> fun () -> Perlin.create w h seed
+            | Simplex (w, h) -> fun () -> Simplex.create w h
         match render with
         | SDL -> 
             let width, height = 
                 match noise with 
                 | DiamondSquare n -> pown 2 n + 1, pown 2 n + 1
-                | Perlin (w, h) -> w, h
+                | Perlin (w, h) | Simplex (w, h) -> w, h
             showViaSDL width height creator
         | PPM fileName -> creator () |> PPM.grayscale fileName
         | BMP fileName -> creator () |> BMP.grayscale fileName
