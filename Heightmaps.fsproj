@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="diamond-square.bmp" />
-    <Content Include="perlin.bmp" />
-    <Content Include="simplex.bmp" />
+    <Content Include="diamond-square.jpg" />
+    <Content Include="perlin.jpg" />
+    <Content Include="simplex.jpg" />
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include="README.md" />

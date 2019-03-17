@@ -3,14 +3,14 @@
 A collection of heightmap generators, along with some bmp/ppm image format savers. 
 
 <div align="center">
-	<img src="./diamond-square.bmp" />
-	<img src="./perlin.bmp" />
-	<img src="./simplex.bmp" />
+	<img src="./diamond-square.jpg" alt="Diamond Square. Perfect, but very, very slow" />
+	<img src="./perlin.jpg" alt="Perlin noise. Famous from Tron" />
+	<img src="./simplex.jpg" alt="Simplex noise. My eyes!" />
 </div>
 
 No external libraries have been used (except for the SDL C library), so this project will hopefully serve as a good reference source for a raw F# implementation of these algorithms.
 
-Currently, [Diamond Square](https://en.wikipedia.org/wiki/Diamond-square_algorithm), [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise) and [Simplex noise](https://en.wikipedia.org/wiki/Simplex_noise) have been implemented, with the [PPM format](https://en.wikipedia.org/wiki/Netpbm_format), [BMP format](https://en.wikipedia.org/wiki/BMP_file_format) and a [SDL](https://en.wikipedia.org/wiki/Simple_DirectMedia_Layer) renderer. You can find the implementations of each in the appropriately named F# files - each file is completely self contained.
+Currently, [Diamond Square](https://en.wikipedia.org/wiki/Diamond-square_algorithm), [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise) and [Simplex noise](https://en.wikipedia.org/wiki/Simplex_noise) have been implemented, with the [PPM format (PM6)](https://en.wikipedia.org/wiki/Netpbm_format), [BMP format (24bit)](https://en.wikipedia.org/wiki/BMP_file_format) and a [SDL](https://en.wikipedia.org/wiki/Simple_DirectMedia_Layer) renderer. You can find the implementations of each in the appropriately named F# files - each file is completely self contained.
 
 The project is a console app. It will take command-line arguments to configure (instructions can be seen by running it with 'help', or seeing the definition in the code [here](https://github.com/ChrisPritchard/Heightmaps/blob/master/cli/Program.fs#L45).
 
