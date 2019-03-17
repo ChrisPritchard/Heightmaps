@@ -17,7 +17,7 @@ let getConfig args =
             let simplexIndex = Array.IndexOf (args, "-simplex") 
             let diamondIndex = Array.IndexOf (args, "-diamondsquare") 
             if perlinIndex < 0 && diamondIndex < 0 && simplexIndex < 0 then 
-                DiamondSquare 8
+                Simplex (512, 512)
             elif simplexIndex < 0 && diamondIndex < 0 then
                 Perlin (parse (perlinIndex + 1), parse (perlinIndex + 2))
             elif perlinIndex < 0 && simplexIndex < 0 then
@@ -43,10 +43,11 @@ let main args =
     | None ->
         """
             Arguments:
+            -simplex [w] [h] will generate simplex noise
             -perlin [w] [h] will generate perlin noise
             -diamondsquare [power of 2] will generate a diamond square heightmap, at 2n+1 size
 
-                * default is a diamond square heightmap, with 9 as the power of 2 (513 pixels)
+                * default is simplex noise, in a 512 by 512 image
                 * diamond square will max out at a 2n value of 12 (which would create a 50mb bmp)
 
             -ppm [fn]: will save output as a .ppm image
