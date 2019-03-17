@@ -37,12 +37,14 @@ let private simplexNoise (perms: byte []) x y =
         else
             let t0 = t0 * t0
             t0 * t0 * grad perms.[ii + int perms.[jj]] x0 y0
+
     let t1 = 0.5 - x1 * x1 - y1 * y1
     let n1 =
         if t1 < 0. then 0.
         else 
             let t1 = t1 * t1
-            t1 * t1 * grad perms.[ii + int i1 + int perms.[jj + 1]] x1 y1
+            t1 * t1 * grad perms.[ii + int i1 + int perms.[jj + int j1]] x1 y1
+
     let t2 = 0.5 - x2 * x2 - y2 * y2
     let n2 =
         if t2 < 0. then 0.
