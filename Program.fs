@@ -2,7 +2,10 @@
 open System
 
 type RenderMode = SDL | PPM of string | BMP of string
-type NoiseType = DiamondSquare of powerOfTwo:int | Perlin of width:int * height:int
+type NoiseType = 
+    | DiamondSquare of powerOfTwo:int 
+    | Perlin of width:int * height:int 
+    | Simplex of width:int * height:int
 
 let getConfig args = 
     if args = [|"help"|] || args = [|"?"|] then 
@@ -11,13 +14,16 @@ let getConfig args =
         let parse i = Int32.Parse args.[i]
         let noise = 
             let perlinIndex = Array.IndexOf (args, "-perlin") 
+            let simplexIndex = Array.IndexOf (args, "-simplex") 
             let diamondIndex = Array.IndexOf (args, "-diamondsquare") 
-            if perlinIndex < 0 && diamondIndex < 0 then 
+            if perlinIndex < 0 && diamondIndex < 0 && simplexIndex < 0 then 
                 DiamondSquare 8
-            elif perlinIndex < 0 then
+            elif simplexIndex < 0 && diamondIndex < 0 then
+                Perlin (parse (perlinIndex + 1), parse (perlinIndex + 2))
+            elif perlinIndex < 0 && simplexIndex < 0 then
                 DiamondSquare (min 12 (parse (diamondIndex + 1)))
             else
-                Perlin (parse (perlinIndex + 1), parse (perlinIndex + 2))
+                Simplex (parse (perlinIndex + 1), parse (perlinIndex + 2))
         let output =
             let ppmIndex = Array.IndexOf (args, "-ppm") 
             let bmpIndex = Array.IndexOf (args, "-bmp") 

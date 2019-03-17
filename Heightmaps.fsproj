@@ -11,9 +11,10 @@
     <None Include="README.md" />
     <Compile Include="BMP.fs" />
     <Compile Include="PPM.fs" />
-    <Compile Include="Perlin.fs" />
-    <Compile Include="DiamondSquare.fs" />
     <Compile Include="SDL.fs" />
+    <Compile Include="DiamondSquare.fs" />
+    <Compile Include="Perlin.fs" />
+    <Compile Include="Simplex.fs" />
     <Compile Include="Program.fs" />
     <None Include="SDL2.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
