@@ -52,7 +52,7 @@ let grayscale array =
                 |> Array.collect (fun x ->
                     let v = array.[x, y]
                     let gs = int (v * 255.) |> byte
-                    [| gs; gs; gs|])
+                    [| gs; gs; gs |]) // this where it is made grayscale. if the array contained multi data you would set it here
             let padding = Array.zeroCreate<byte> padding
             Array.append row padding)
         |> Array.concat
