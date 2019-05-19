@@ -1,5 +1,6 @@
 ﻿open SDL
 open System
+open System.IO
 
 type RenderMode = SDL | PPM of string | BMP of string
 type NoiseType = 
@@ -38,6 +39,7 @@ let getConfig args =
 
 [<EntryPoint>]
 let main args =
+
     let config = getConfig args
     match config with
     | None ->
@@ -73,7 +75,7 @@ let main args =
                 | DiamondSquare n -> pown 2 n + 1, pown 2 n + 1
                 | Perlin (w, h) | Simplex (w, h) -> w, h
             showViaSDL width height creator
-        | PPM fileName -> creator () |> PPM.grayscale fileName
-        | BMP fileName -> creator () |> BMP.grayscale fileName
+        | PPM fileName -> creator () |> PPM.grayscale |> fun bytes -> File.WriteAllBytes (fileName, bytes)
+        | BMP fileName -> creator () |> BMP.grayscale |> fun bytes -> File.WriteAllBytes (fileName, bytes)
         
     0

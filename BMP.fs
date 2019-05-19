@@ -5,12 +5,8 @@
 module BMP
 
 open System
-open System.IO
 
-let grayscale fileName array =
-    if File.Exists fileName then File.Delete fileName
-    use out = File.OpenWrite fileName
-
+let grayscale array =
     let width, height = Array2D.length1 array, Array2D.length2 array
     // each line width must be divisible by 4. 
     // as each pixel is three bytes, we need padding bytes
@@ -61,4 +57,4 @@ let grayscale fileName array =
                 let gs = int (v * 255.) |> byte
                 yield! [gs;gs;gs]
             yield! List.replicate padding 0uy
-    ] |> Seq.iter out.WriteByte
+    ] |> Seq.toArray
