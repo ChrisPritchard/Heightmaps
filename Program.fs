@@ -40,6 +40,14 @@ let getConfig args =
 [<EntryPoint>]
 let main args =
 
+    //let testmap = Simplex.create 1024 768 0.01 None
+    //let startTime = DateTime.Now
+    //let mutable data = [||]
+    //let count = 100
+    //[1..count] |> List.iter (fun _ -> data <- BMP.grayscale testmap)
+    //let timeTaken = DateTime.Now.Subtract startTime
+    //let timePerOp = int timeTaken.TotalMilliseconds / count
+
     let config = getConfig args
     match config with
     | None ->
